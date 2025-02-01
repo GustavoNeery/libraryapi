@@ -10,11 +10,11 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "actor")
+@Table(name = "author")
 @Getter
 @Setter
 @ToString
-public class Actor {
+public class Author {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -29,6 +29,6 @@ public class Actor {
     @Column(length = 50, nullable = false)
     private String nationality;
 
-    @OneToMany(mappedBy = "actor")
+    @OneToMany(mappedBy = "author")
     private List<Book> books;
 }

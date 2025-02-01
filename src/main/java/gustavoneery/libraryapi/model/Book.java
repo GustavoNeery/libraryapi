@@ -33,6 +33,6 @@ public class Book {
     private BigDecimal price;
 
     @ManyToOne
-    @JoinColumn(name = "id_actor")
-    private Actor actor;
+    @JoinColumn(name = "id_author")
+    private Author author;
 }
