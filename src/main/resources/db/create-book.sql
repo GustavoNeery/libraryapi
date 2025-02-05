@@ -5,6 +5,9 @@ create table book(
 	publication_date date not null,
 	gender varchar(30) not null,
 	price numeric(18, 2),
+    date_registration timestamp,
+    date_update timestamp,
+    user_id uuid not null,
 	id_actor uuid not null references actor(id),
 	constraint chk_gender check (gender in ('FICCATION', 'FANTASY', 'MISTERY', 'ROMANCE', 'BIOGRAFY', 'SCIENCE'))
 );
