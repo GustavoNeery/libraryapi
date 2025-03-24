@@ -7,13 +7,11 @@ import jakarta.persistence.EntityListeners;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("authors")
@@ -36,5 +34,13 @@ public class AuthorController {
                 .toUri();
 
         return ResponseEntity.created(location).build();
+    }
+
+    @GetMapping("{id}")
+    public ResponseEntity<RequestAuthorDto> findById(@PathVariable("id") String id) throws ClassNotFoundException {
+        var authorId = UUID.fromString(id);
+        RequestAuthorDto dto = authorService.findById(authorId);
+
+        return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 }

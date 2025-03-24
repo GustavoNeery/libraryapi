@@ -5,7 +5,7 @@ import gustavoneery.libraryapi.model.Author;
 import java.time.LocalDate;
 import java.util.UUID;
 
-public record RequestAuthorDto(String name, LocalDate bornDate, String nationality, UUID userId) {
+public record RequestAuthorDto(UUID id, String name, LocalDate bornDate, String nationality, UUID userId) {
 
     public Author mapToAuthor(){
         Author author = new Author();
