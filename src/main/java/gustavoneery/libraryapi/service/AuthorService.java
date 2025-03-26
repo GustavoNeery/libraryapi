@@ -5,6 +5,7 @@ import gustavoneery.libraryapi.model.Author;
 import gustavoneery.libraryapi.repository.AuthorRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -31,5 +32,22 @@ public class AuthorService {
         Author author = optionalAuthor.get();
         RequestAuthorDto requestAuthorDto = new RequestAuthorDto(author.getId(), author.getName(), author.getBornDate(), author.getNationality(), author.getUserId());
         return requestAuthorDto;
+    }
+
+    public void deleteById(UUID id) throws ClassNotFoundException {
+        Optional<Author> optionalAuthor = repository.findById(id);
+
+        if(optionalAuthor.isEmpty()) {
+            throw new ClassNotFoundException("Author not found");
+        }
+
+        repository.deleteById(id);
+    }
+
+    public List<RequestAuthorDto> findByNameAndNationality(String name, String nationality) {
+        List<Author> authors = repository.findByNameAndNationality(name, nationality);
+
+        return authors.stream().map(author -> new RequestAuthorDto(author.getId(), author.getName(), author.getBornDate(),
+                author.getNationality(), author.getUserId())).toList();
     }
 }

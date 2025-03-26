@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -42,5 +43,19 @@ public class AuthorController {
         RequestAuthorDto dto = authorService.findById(authorId);
 
         return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<Void> deleteById(@PathVariable("id") String id) throws ClassNotFoundException {
+        var authorId = UUID.fromString(id);
+        authorService.deleteById(authorId);
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<RequestAuthorDto>> findByNameAndNationality(@RequestParam(value = "name", required = false) String name, @RequestParam(value = "nationality", required = false) String nationality){
+        List<RequestAuthorDto> authors = authorService.findByNameAndNationality(name, nationality);
+        return new ResponseEntity<>(authors, HttpStatus.OK);
     }
 }
