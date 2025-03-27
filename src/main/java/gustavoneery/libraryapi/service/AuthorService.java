@@ -50,4 +50,19 @@ public class AuthorService {
         return authors.stream().map(author -> new RequestAuthorDto(author.getId(), author.getName(), author.getBornDate(),
                 author.getNationality(), author.getUserId())).toList();
     }
+
+    public void update(UUID id, RequestAuthorDto dto) {
+        Optional<Author> authorOptional = repository.findById(id);
+
+        if(authorOptional.isEmpty()) {
+            throw new IllegalArgumentException("Author not found");
+        }
+
+        Author author = authorOptional.get();
+        author.setName(dto.name());
+        author.setBornDate(dto.bornDate());
+        author.setNationality(dto.nationality());
+
+        repository.save(author);
+    }
 }

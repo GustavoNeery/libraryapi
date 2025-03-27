@@ -58,4 +58,10 @@ public class AuthorController {
         List<RequestAuthorDto> authors = authorService.findByNameAndNationality(name, nationality);
         return new ResponseEntity<>(authors, HttpStatus.OK);
     }
+
+    @PutMapping("{id}")
+    public ResponseEntity<Void> update(@PathVariable("id") UUID id, @RequestBody RequestAuthorDto requestAuthorDto) {
+        authorService.update(id, requestAuthorDto);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }
