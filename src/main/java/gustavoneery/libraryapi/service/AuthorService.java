@@ -3,6 +3,7 @@ package gustavoneery.libraryapi.service;
 import gustavoneery.libraryapi.dto.RequestAuthorDto;
 import gustavoneery.libraryapi.model.Author;
 import gustavoneery.libraryapi.repository.AuthorRepository;
+import gustavoneery.libraryapi.validator.AuthorValidator;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,12 +14,15 @@ import java.util.UUID;
 public class AuthorService {
 
     private AuthorRepository repository;
+    private AuthorValidator validator;
 
-    public AuthorService(AuthorRepository repository) {
+    public AuthorService(AuthorRepository repository, AuthorValidator validator) {
         this.repository = repository;
+        this.validator = validator;
     }
 
     public void save(Author author) {
+        validator.validate(author);
         repository.save(author);
     }
 
@@ -62,6 +66,7 @@ public class AuthorService {
         author.setName(dto.name());
         author.setBornDate(dto.bornDate());
         author.setNationality(dto.nationality());
+        validator.validate(author);
 
         repository.save(author);
     }
