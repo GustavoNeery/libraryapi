@@ -1,6 +1,8 @@
 package gustavoneery.libraryapi.controller;
 
 import gustavoneery.libraryapi.dto.RequestAuthorDto;
+import gustavoneery.libraryapi.dto.ResponseError;
+import gustavoneery.libraryapi.exceptions.RegistryDuplicatedException;
 import gustavoneery.libraryapi.model.Author;
 import gustavoneery.libraryapi.service.AuthorService;
 import jakarta.persistence.EntityListeners;
@@ -12,6 +14,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @RestController
@@ -26,15 +29,20 @@ public class AuthorController {
 
     @PostMapping
     public ResponseEntity save(@RequestBody RequestAuthorDto requestAuthorDto) {
-        Author author = requestAuthorDto.mapToAuthor();
-        authorService.save(author);
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(author.getId())
-                .toUri();
+        try {
+            Author author = requestAuthorDto.mapToAuthor();
+            authorService.save(author);
+            URI location = ServletUriComponentsBuilder
+                    .fromCurrentRequest()
+                    .path("/{id}")
+                    .buildAndExpand(author.getId())
+                    .toUri();
 
-        return ResponseEntity.created(location).build();
+            return ResponseEntity.created(location).build();
+        } catch (RegistryDuplicatedException e) {
+            var errorDto = ResponseError.conflict(e.getMessage());
+            return ResponseEntity.status(errorDto.status()).body(errorDto);
+        }
     }
 
     @GetMapping("{id}")
@@ -60,8 +68,13 @@ public class AuthorController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<Void> update(@PathVariable("id") UUID id, @RequestBody RequestAuthorDto requestAuthorDto) {
-        authorService.update(id, requestAuthorDto);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    public ResponseEntity<Object> update(@PathVariable("id") UUID id, @RequestBody RequestAuthorDto requestAuthorDto) {
+        try {
+            authorService.update(id, requestAuthorDto);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (RegistryDuplicatedException e) {
+            var errorDto = ResponseError.conflict(e.getMessage());
+            return ResponseEntity.status(errorDto.status()).body(errorDto);
+        }
     }
 }

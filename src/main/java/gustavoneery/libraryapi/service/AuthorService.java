@@ -1,9 +1,13 @@
 package gustavoneery.libraryapi.service;
 
 import gustavoneery.libraryapi.dto.RequestAuthorDto;
+import gustavoneery.libraryapi.dto.ResponseError;
+import gustavoneery.libraryapi.exceptions.RegistryDuplicatedException;
 import gustavoneery.libraryapi.model.Author;
 import gustavoneery.libraryapi.repository.AuthorRepository;
 import gustavoneery.libraryapi.validator.AuthorValidator;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -66,8 +70,9 @@ public class AuthorService {
         author.setName(dto.name());
         author.setBornDate(dto.bornDate());
         author.setNationality(dto.nationality());
-        validator.validate(author);
 
+        validator.validate(author);
         repository.save(author);
+
     }
 }

@@ -19,22 +19,21 @@ public class AuthorValidator {
     public void validate(Author author) {
         Optional<Author> authorOptional = repository.findByNameAndNationalityAndBornDate(author.getName(), author.getNationality(), author.getBornDate());
 
-        if(isAuthorExists(authorOptional)) {
-            throw new RegistryDuplicatedException("Already exists that author");
-        }
+        if(authorOptional.isPresent()){
 
-        if(!isSameAuthorId(author, authorOptional.get())) {
-            throw new RegistryDuplicatedException("An author with the same name," +
-                    "nationality, and birthdate but a different ID already exists.");
+            if(author.getId() == null) {
+                throw new RegistryDuplicatedException("Already exists that author");
+            }
+
+            if(!isSameAuthorId(author, authorOptional)){
+                throw new RegistryDuplicatedException("An author with the same name," +
+                        "nationality, and birthdate but a different ID already exists.");
+            }
         }
     }
 
-    private boolean isAuthorExists(Optional<Author> authorOptional) {
-        return authorOptional.isPresent();
-    }
-
-    private boolean isSameAuthorId(Author author, Author authorToUpdate) {
-        return author.getId().equals(authorToUpdate.getId());
+    private boolean isSameAuthorId(Author author, Optional<Author> authorToUpdate) {
+        return author.getId().equals(authorToUpdate.get().getId());
     }
 
 }
