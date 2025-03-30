@@ -1,13 +1,11 @@
 package gustavoneery.libraryapi.service;
 
 import gustavoneery.libraryapi.dto.RequestAuthorDto;
-import gustavoneery.libraryapi.dto.ResponseError;
-import gustavoneery.libraryapi.exceptions.RegistryDuplicatedException;
+import gustavoneery.libraryapi.exceptions.OperationNotPermittedException;
 import gustavoneery.libraryapi.model.Author;
 import gustavoneery.libraryapi.repository.AuthorRepository;
+import gustavoneery.libraryapi.repository.BookRepository;
 import gustavoneery.libraryapi.validator.AuthorValidator;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,10 +17,12 @@ public class AuthorService {
 
     private AuthorRepository repository;
     private AuthorValidator validator;
+    private BookRepository bookRepository;
 
-    public AuthorService(AuthorRepository repository, AuthorValidator validator) {
+    public AuthorService(AuthorRepository repository, AuthorValidator validator, BookRepository bookRepository) {
         this.repository = repository;
         this.validator = validator;
+        this.bookRepository = bookRepository;
     }
 
     public void save(Author author) {
@@ -38,8 +38,7 @@ public class AuthorService {
         }
 
         Author author = optionalAuthor.get();
-        RequestAuthorDto requestAuthorDto = new RequestAuthorDto(author.getId(), author.getName(), author.getBornDate(), author.getNationality(), author.getUserId());
-        return requestAuthorDto;
+        return new RequestAuthorDto(author.getId(), author.getName(), author.getBornDate(), author.getNationality(), author.getUserId());
     }
 
     public void deleteById(UUID id) throws ClassNotFoundException {
@@ -47,6 +46,10 @@ public class AuthorService {
 
         if(optionalAuthor.isEmpty()) {
             throw new ClassNotFoundException("Author not found");
+        }
+
+        if(hasBook(optionalAuthor.get())) {
+            throw new OperationNotPermittedException("Not is permitted delete Author when he has book registered.");
         }
 
         repository.deleteById(id);
@@ -73,6 +76,9 @@ public class AuthorService {
 
         validator.validate(author);
         repository.save(author);
+    }
 
+    public boolean hasBook(Author author) {
+        return bookRepository.existsByAuthor(author);
     }
 }

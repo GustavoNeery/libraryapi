@@ -2,6 +2,7 @@ package gustavoneery.libraryapi.controller;
 
 import gustavoneery.libraryapi.dto.RequestAuthorDto;
 import gustavoneery.libraryapi.dto.ResponseError;
+import gustavoneery.libraryapi.exceptions.OperationNotPermittedException;
 import gustavoneery.libraryapi.exceptions.RegistryDuplicatedException;
 import gustavoneery.libraryapi.model.Author;
 import gustavoneery.libraryapi.service.AuthorService;
@@ -54,11 +55,16 @@ public class AuthorController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable("id") String id) throws ClassNotFoundException {
-        var authorId = UUID.fromString(id);
-        authorService.deleteById(authorId);
+    public ResponseEntity<Object> deleteById(@PathVariable("id") String id) throws ClassNotFoundException {
+        try {
+            var authorId = UUID.fromString(id);
+            authorService.deleteById(authorId);
 
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (OperationNotPermittedException e) {
+            var errorDto = ResponseError.patternResponse(e.getMessage());
+            return ResponseEntity.status(errorDto.status()).body(errorDto);
+        }
     }
 
     @GetMapping
