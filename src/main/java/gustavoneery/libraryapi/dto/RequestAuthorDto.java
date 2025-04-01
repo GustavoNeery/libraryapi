@@ -1,11 +1,21 @@
 package gustavoneery.libraryapi.dto;
 
 import gustavoneery.libraryapi.model.Author;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 import java.util.UUID;
 
-public record RequestAuthorDto(UUID id, String name, LocalDate bornDate, String nationality, UUID userId) {
+public record RequestAuthorDto(
+        UUID id,
+        @NotBlank
+        String name,
+        @NotNull
+        LocalDate bornDate,
+        @NotBlank
+        String nationality,
+        UUID userId) {
 
     public Author mapToAuthor(){
         Author author = new Author();
