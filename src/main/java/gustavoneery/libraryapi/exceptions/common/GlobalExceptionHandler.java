@@ -5,6 +5,7 @@ import gustavoneery.libraryapi.dto.ResponseError;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.List;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
     public ResponseError handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         List<FieldError> errors = e.getFieldErrors()
                 .stream()

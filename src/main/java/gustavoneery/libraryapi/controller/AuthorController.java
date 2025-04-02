@@ -6,16 +6,14 @@ import gustavoneery.libraryapi.exceptions.OperationNotPermittedException;
 import gustavoneery.libraryapi.exceptions.RegistryDuplicatedException;
 import gustavoneery.libraryapi.model.Author;
 import gustavoneery.libraryapi.service.AuthorService;
-import jakarta.persistence.EntityListeners;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 @RestController
@@ -29,7 +27,7 @@ public class AuthorController {
     }
 
     @PostMapping
-    public ResponseEntity save(@RequestBody RequestAuthorDto requestAuthorDto) {
+    public ResponseEntity save(@RequestBody @Valid RequestAuthorDto requestAuthorDto) {
         try {
             Author author = requestAuthorDto.mapToAuthor();
             authorService.save(author);
