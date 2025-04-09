@@ -7,10 +7,14 @@ import gustavoneery.libraryapi.exceptions.RegistryDuplicatedException;
 import gustavoneery.libraryapi.model.Author;
 import gustavoneery.libraryapi.service.AuthorService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.data.domain.Pageable;
+
 
 import java.net.URI;
 import java.util.List;
@@ -50,6 +54,18 @@ public class AuthorController {
         RequestAuthorDto dto = authorService.findById(authorId);
 
         return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<Page<Author>> findAll(@RequestParam(
+                                                        value = "page-number",
+                                                        defaultValue = "0") int pageNumber,
+                                                @RequestParam(
+                                                        value = "page-size",
+                                                        defaultValue = "10") int pageSize) {
+        Page<Author> authors = authorService.findAuthors(pageNumber, pageSize);
+
+        return new ResponseEntity<>(authors, HttpStatus.OK);
     }
 
     @DeleteMapping("{id}")

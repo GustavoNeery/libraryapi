@@ -6,6 +6,9 @@ import gustavoneery.libraryapi.model.Author;
 import gustavoneery.libraryapi.repository.AuthorRepository;
 import gustavoneery.libraryapi.repository.BookRepository;
 import gustavoneery.libraryapi.validator.AuthorValidator;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -39,6 +42,11 @@ public class AuthorService {
 
         Author author = optionalAuthor.get();
         return new RequestAuthorDto(author.getId(), author.getName(), author.getBornDate(), author.getNationality(), author.getUserId());
+    }
+
+    public Page<Author> findAuthors(int pageNumber, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+       return repository.findAll(pageable);
     }
 
     public void deleteById(UUID id) throws ClassNotFoundException {
